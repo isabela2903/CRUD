@@ -27,7 +27,7 @@ public partial class Feed : Window
 
         using var comando = new MySqlCommand(query, conexao);
         comando.Parameters.AddWithValue("@usuario_id", _usuario.Id);
-        
+
         try
         {
             conexao.Open();
@@ -107,9 +107,9 @@ public partial class Feed : Window
             var linhasAfetadas = comando.ExecuteNonQuery();
             if (linhasAfetadas == 0) throw new Exception($"Erro ao {acao} postagem!");
         }
-        catch (Exception excecao)
+        catch (Exception exception)
         {
-            MessageBox.Show(excecao.Message);
+            MessageBox.Show(exception.Message);
         }
         finally
         {
@@ -127,5 +127,46 @@ public partial class Feed : Window
     {
         new MeuPerfil(_usuario).ShowDialog();
         CarregarPosts_QuandoIniciar();
+    }
+
+    private void BtnEditarPostagem_OnClick(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void BtnDeletarPostagem_OnClick(object sender, RoutedEventArgs e)
+    {
+        var resultadoMessageBox = MessageBox.Show("Você tem certeza que deseja deletar essa postagem?",
+            "Confirmação de Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (resultadoMessageBox == MessageBoxResult.No) return;
+        
+        var botao = (Button)sender;
+        var postagemId = (int)botao.Tag;
+        
+        using var conexao = new MySqlConnection(App.StringConexao);
+
+        const string query = "DELETE FROM postagens WHERE id = @postagem_id";
+
+        using var comando = new MySqlCommand(query, conexao);
+        comando.Parameters.AddWithValue("@postagem_id", postagemId);
+
+        try
+        {
+            conexao.Open();
+            var linhasAfetadas = comando.ExecuteNonQuery();
+
+            if (linhasAfetadas < 1) throw new Exception("Erro ao deletar postagem!");
+            
+            MessageBox.Show("Sua postagem foi deletada!");
+            CarregarPosts_QuandoIniciar();
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(exception.Message);
+        }
+        finally
+        {
+            conexao.Close();
+        }
     }
 }
