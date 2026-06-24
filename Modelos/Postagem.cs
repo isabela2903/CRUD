@@ -10,7 +10,6 @@ public class Postagem : INotifyPropertyChanged
 
     public int Id { get; set; }
     public string Conteudo { get; set; } = string.Empty;
-
     public int Curtidas
     {
         get => _curtidas;
@@ -20,10 +19,8 @@ public class Postagem : INotifyPropertyChanged
             NotificarPropriedadeAlterada();
         }
     }
-
     public DateTime PostadoEm { get; set; }
     public Usuario Usuario { get; set; } = null!;
-
     public bool FoiCurtido
     {
         get => _foiCurtido;
@@ -34,6 +31,7 @@ public class Postagem : INotifyPropertyChanged
             NotificarPropriedadeAlterada();
         }
     }
+    public bool SuaPostagem { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
